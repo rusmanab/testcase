@@ -54,17 +54,25 @@
           <li class="nav-item">
             <a href="{{ route('category')}}" class="nav-link <?php echo $uri_ == "jenistrans" ? "active":""?>">
 
-                <i class="nav-icon fas fa-car-crash"></i>
+                <i class="nav-icon fas fa-book"></i>
                 <p>Category</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ route('product')}}" class="nav-link <?php echo $uri_ == "merekmobil" ? "active":""?>">
-                <i class="nav-icon fas fa-taxi"></i>
+                <i class="nav-icon fas fa-box"></i>
                 <p>Product</p>
             </a>
           </li>
+          <li class="nav-item ">
+            <a href="{{route("login.logout")}}" class="nav-link ">
+                <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>
+                Logout
+              </p>
+            </a>
 
+          </li>
 
         </ul>
       </nav>

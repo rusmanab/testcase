@@ -83,7 +83,7 @@ Majoo :: Category
                     <div class="modal-body">
                         <div class="form-group row">
                             <input type="hidden" id="id"  name="id"/>
-                            <label for="inputCategory" class="col-sm-3 col-form-label">Category Name</label>
+                            <label for="inputCategory" class="col-sm-4 col-form-label">Category Name</label>
                             <div class="col-sm-8">
                                 <input type="text" name="category_name" class="form-control"  id="inputCategory" placeholder="Nama Lengkap">
                             </div>
@@ -107,10 +107,7 @@ Majoo :: Category
 
 <script src="{{asset('assets/template/adminlte')}}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="{{asset('assets/template/adminlte')}}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="{{asset('assets/template/adminlte')}}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
 
-<script src="{{asset('assets/template/adminlte')}}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="{{asset('assets/template/adminlte')}}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="{{asset('assets/template/adminlte')}}/plugins/sweetalert2/sweetalert2.all.min.js"></script>
 
 <script type="text/javascript">

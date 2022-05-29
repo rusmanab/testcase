@@ -3,9 +3,6 @@
 Majoo :: Product
 @endsection
 @section('css')
-<link rel="stylesheet" href="{{asset('assets/template/adminlte')}}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="{{asset('assets/template/adminlte')}}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-<link rel="stylesheet" href="{{asset('assets/template/adminlte')}}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 <link rel="stylesheet" href="{{asset('assets/template/adminlte')}}/plugins/sweetalert2/sweetalert2.css">
 
 @endsection
@@ -44,21 +41,8 @@ Majoo :: Product
                     </div>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body">
-                    <table class="table table-bordered" id="list-table">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Product Name</th>
-                                <th>Category Name</th>
-                                <th>Price</th>
-                                <th>Created at</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-
-                    </table>
+                <div class="card-body" id="table_data">
+                    @include('pages.product.tableajax')
                 </div>
                 <!-- /.card-body -->
               </div>
@@ -70,67 +54,34 @@ Majoo :: Product
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-    <div class="modal fade" id="modalForm">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form class="form-horizontal" id="formProduct" action="{{ route('product.save') }}" method="POST">
-                    @csrf
-
-                    <div class="modal-header">
-                        <h4 class="modal-title">Product Form</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group row">
-                            <input type="hidden" id="id"  name="id"/>
-                            <label for="inputProduct" class="col-sm-3 col-form-label">Product Name</label>
-                            <div class="col-sm-8">
-                                <input type="text" name="Product_name" class="form-control"  id="inputProduct" placeholder="Nama Lengkap">
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
 @endsection
 @section('javascript')
-<script src="{{asset('assets/template/adminlte')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="{{asset('assets/template/adminlte')}}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-
-
-<script src="{{asset('assets/template/adminlte')}}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="{{asset('assets/template/adminlte')}}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="{{asset('assets/template/adminlte')}}/plugins/sweetalert2/sweetalert2.all.min.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function(e){
 
-    var table = $('#list-table').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: "{{ route('product.gettable') }}",
-        "columnDefs": [
-            { className: "text-center", "targets": [ 0] }
-        ],
-        columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'product_name', name: 'product_name'},
-            {data: 'category_name', name: 'category_name'},
-            {data: 'price', name: 'price'},
-            {data: 'created_at', name: 'created_at'},
-            {data: 'aksi', name: 'aksi'},
-        ]
-    });
-
+    $("body").on("click",".pagination a", function(event){
+        event.preventDefault();
+        var page = $(this).attr('href').split('page=')[1];
+        loadTable(page);
+    })
+    function loadTable(page){
+        $.ajax({
+            url:"{{route('product.gettable')}}?page="+page,
+            success:function(data)
+            {
+                $('#table_data').html(data);
+            },
+            beforeSend: function() {
+                $("#loadingProgress").show();
+            },
+            complete: function() {
+                $("#loadingProgress").hide();
+            }
+        });
+    }
     $("body").on("click",".hapusItem", function(e){
         Swal.fire({
             title: 'Delete!',
@@ -166,7 +117,7 @@ $(document).ready(function(e){
                         }).then(function() {
                             //window.location = "redirectURL";
                             if ( response.success ){
-                                table.ajax.reload();
+                                loadTable(1);
                             }
                         });
                     },

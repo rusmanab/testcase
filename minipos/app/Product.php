@@ -8,29 +8,22 @@ use Illuminate\Support\Facades\DB;
 class Product extends Model
 {
     //
-    public static function loadData(){
-
-        $data = DB::table('products')->leftJoin("categories","products.category_id","=","categories.id")->get();
-
+    public static function loadData($limit){
+        $url = url("/storage");
         $data = DB::table('products')
-                ->select(DB::raw("products.*,categories.category_name"))
-                ->leftJoin("categories","products.category_id","=","categories.id")
-                ->get();
+            ->select(DB::raw("products.*,REPLACE(products.image,'public/','".$url."/') as image_link,categories.category_name"))
+            ->leftJoin("categories","products.category_id","=","categories.id")
+            ->orderBy("id","desc")
+            ->paginate($limit);
 
-        $dataTable = datatables()->of($data)
-                    ->addIndexColumn()
-                    ->addColumn('aksi', function($data){
-                        $route = route('product.edit',[ 'id' =>$data->id]);
-                        $html = "<center>";
-                        $html = "<a title='Hapus' href='".$route."' class='edit' data-id='".$data->id."' ><span class='fa fa-edit'></span></a> ";
-                        $html .= "<a title='Hapus' href='#' class='hapusItem' data-id='".$data->id."' ><span class='fa fa-trash'></span></a>";
-                        $html .= "</center>";
-                        return $html;
-                    })
-                    ->rawColumns(['checkbox', 'aksi'])
-                    ->addIndexColumn()
-                    ->make(true);
+        return $data;
+    }
 
-        return $dataTable;
+    public static function getData($id){
+        $data = DB::table('products')
+            ->select(DB::raw("products.*,categories.category_name"))
+            ->leftJoin("categories","products.category_id","=","categories.id")
+            ->where('products.id',$id)->first();
+        return $data;
     }
 }
