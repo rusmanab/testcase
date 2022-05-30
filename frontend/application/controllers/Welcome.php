@@ -1,25 +1,39 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\ClientException;
 
 class Welcome extends CI_Controller {
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see https://codeigniter.com/user_guide/general/urls.html
-	 */
 	public function index()
 	{
-		$this->load->view('welcome_message');
+		try {
+			$client = new Client([
+				'base_uri' => 'http://127.0.0.1:8000',
+				// default timeout 5 detik
+				'timeout'  => 5,
+			]);
+			 
+			$response = $client->request('POST', '/api/product/getall', [
+				'json' => [
+					'api_token' => 'majoo123!@#$',
+				]
+			]);
+			$body = $response->getBody();
+			$dataProducts = json_decode($body);
+			
+			if (!$dataProducts->success){
+				exit($dataProducts->message);
+			}
+			
+			$data['products'] = $dataProducts->products;
+			
+			$this->load->view('front', $data);
+		} catch (ClientException $e) {
+			echo Psr7\Message::toString($e->getRequest());
+			echo Psr7\Message::toString($e->getResponse());
+		}
+		
 	}
 }
