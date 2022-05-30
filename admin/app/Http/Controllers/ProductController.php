@@ -114,6 +114,7 @@ class ProductController extends Controller
                     ]);
                 }else{
                     $validator = Validator::make($request->all(), [
+                        'product_name' => 'required',
                         'price'        => 'required|numeric',
                         'category_id'  => 'required',
                     ]);

@@ -53,21 +53,31 @@ class CategoryController extends Controller
     }
 
     public function save(Request $request){
+        $id         = $request->id;
+        $category_name      = $request->category_name;
 
-        $validator = Validator::make($request->all(), [
-            'category_name' => 'required',
-        ]);
+
+        if (!$id){
+            $validator = Validator::make($request->all(), [
+                'category_name' => 'required|unique:categories,category_name',
+            ]);
+
+            $Category = new Category();
+        }else{
+            $Category = Category::find($id);
+            if ($Category->category_name != $category_name){
+                $validator = Validator::make($request->all(), [
+                    'category_name' => 'required|unique:categories,category_name',
+                ]);
+            }else{
+                $validator = Validator::make($request->all(), [
+                    'category_name' => 'required',
+                ]);
+            }
+        }
 
         if ($validator->passes()) {
 
-            $id         = $request->id;
-            $category_name      = $request->category_name;
-
-            if (!$id){
-                $Category = new Category();
-            }else{
-                $Category = Category::find($id);
-            }
             $Category->category_name       = $category_name;
             if (!$id){
                 if ($Category->save()){

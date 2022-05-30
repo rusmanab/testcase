@@ -254,7 +254,7 @@ $(document).ready(function(e){
                 }
 
                 Swal.fire({
-                    title: 'Add Product!',
+                    title: 'Update Product!',
                     icon: tipe,
                     html: response.message,
                     type: tipe

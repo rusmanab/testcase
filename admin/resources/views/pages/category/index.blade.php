@@ -243,7 +243,7 @@ $(document).ready(function(e){
                 }
 
                 Swal.fire({
-                    title: 'Add Category!',
+                    title: 'Category!',
                     icon: tipe,
                     text: response.message,
                     type: tipe
